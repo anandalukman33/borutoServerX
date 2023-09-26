@@ -9,6 +9,7 @@ fun main(args: Array<String>) {
 
 @Suppress("unused")
 fun Application.module() {
+    configureStatusPage()
     configureDefaultHeader()
     configureKoin()
     configureSerialization()
