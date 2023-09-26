@@ -21,7 +21,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 
-class ApplicationTest {
+class PositiveCaseTest {
 
     private val heroRepository: HeroRepository by inject(HeroRepository::class.java)
 
