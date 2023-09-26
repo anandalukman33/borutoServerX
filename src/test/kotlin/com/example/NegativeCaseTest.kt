@@ -30,6 +30,10 @@ class NegativeCaseTest {
     @After
     fun stopKoinAfterTest() = stopKoin()
 
+
+    /**
+     * Root endpoint
+     */
     @Test
     fun `access non existing endpoint, assert blank`() = testApplication {
         application {
@@ -48,6 +52,9 @@ class NegativeCaseTest {
         }
     }
 
+    /**
+     * All Heroes Endpoint
+     */
     @Suppress("DEPRECATION")
     @Test
     fun accessAllHeroesEndpoint_AssertHeroesNotFound() {
@@ -78,6 +85,10 @@ class NegativeCaseTest {
         }
     }
 
+
+    /**
+     * Search Heroes Endpoint
+     */
     @Test
     fun `access search heroes endpoint, query empty param, assert empty list heroes`() = testApplication {
         application { configureRouting() }
