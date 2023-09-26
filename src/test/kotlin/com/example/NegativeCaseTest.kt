@@ -3,6 +3,7 @@ package com.example
 import com.example.di.koinModule
 import com.example.model.ApiResponse
 import com.example.plugins.configureRouting
+import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
@@ -30,11 +31,11 @@ class NegativeCaseTest {
     fun stopKoinAfterTest() = stopKoin()
 
     @Test
-    fun accessRootEndpoint_AssertNotCorrectInformation() = testApplication {
+    fun `access non existing endpoint, assert blank`() = testApplication {
         application {
             configureRouting()
         }
-        client.get("/s").apply {
+        client.get("/test123").apply {
             assertEquals(
                 expected = HttpStatusCode.NotFound,
                 actual = status
@@ -43,6 +44,7 @@ class NegativeCaseTest {
                 "Welcome to Boruto API!",
                 actual = bodyAsText()
             )
+            assertEquals("", body())
         }
     }
 
@@ -73,6 +75,46 @@ class NegativeCaseTest {
                     actual = actualResponse
                 )
             }
+        }
+    }
+
+    @Test
+    fun `access search heroes endpoint, query empty param, assert empty list heroes`() = testApplication {
+        application { configureRouting() }
+        val queryNameParameterTest = "?name="
+        client.get("/boruto/heroes/search$queryNameParameterTest").apply {
+            assertEquals(
+                expected = HttpStatusCode.OK,
+                actual = status
+            )
+
+            val actualResponseList = Json.decodeFromString<ApiResponse>(body<String>().toString()).heroes
+
+            assertEquals(
+                expected = emptyList(),
+                actual = actualResponseList
+            )
+
+        }
+    }
+
+    @Test
+    fun `access search heroes endpoint, query non existing hero, assert empty list heroes`() = testApplication {
+        application { configureRouting() }
+        val queryNameParameterTest = "?name=Lukman"
+        client.get("/boruto/heroes/search$queryNameParameterTest").apply {
+            assertEquals(
+                expected = HttpStatusCode.OK,
+                actual = status
+            )
+
+            val actualResponseList = Json.decodeFromString<ApiResponse>(body<String>().toString()).heroes
+
+            assertEquals(
+                expected = emptyList(),
+                actual = actualResponseList
+            )
+
         }
     }
 

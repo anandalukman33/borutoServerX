@@ -35,6 +35,10 @@ class ApplicationTest {
     @After
     fun stopKoinAfterTest() = stopKoin()
 
+
+    /**
+     * Root or Default endpoint
+     */
     @Test
     fun accessRootEndpoint_AssertCorrectInformation() = testApplication {
         application {
@@ -52,6 +56,9 @@ class ApplicationTest {
         }
     }
 
+    /**
+     * Endpoint for collect heroes or get list of heroes.
+     */
     @Suppress("DEPRECATION")
     @Test
     fun accessAllHeroesEndpoint_AssertCorrectInformation() {
@@ -215,6 +222,75 @@ class ApplicationTest {
 
     }
 
+
+    /**
+     * Endpoint for search name heroes.
+     */
+    @Test
+    fun `access search heroes endpoint, query hero name, assert single hero result`() = testApplication {
+        application { configureRouting() }
+        val queryNameParameterTest = "?name=sas"
+        client.get("/boruto/heroes/search$queryNameParameterTest").apply {
+            assertEquals(
+                expected = HttpStatusCode.OK,
+                actual = status
+            )
+
+            val actualResponseListSize = Json.decodeFromString<ApiResponse>(body<String>().toString()).heroes?.size
+
+            // Make sure list response just 1 index
+            assertEquals(
+                expected = 1,
+                actual = actualResponseListSize
+            )
+
+            val actualResponse = Json.decodeFromString<ApiResponse>(body<String>().toString()).heroes
+            val heroBean = actualResponse?.get(0)
+
+            // Make sure name hero is Uchiha Sasuke with paramQuery 'sas'
+            assertEquals(expected = "Uchiha Sasuke", actual = heroBean?.name ?: "")
+        }
+    }
+
+    @Test
+    fun `access search heroes endpoint, query hero name, assert multiple hero result`() = testApplication {
+        application { configureRouting() }
+        val queryNameParameterTest = "?name=sa"
+        client.get("/boruto/heroes/search$queryNameParameterTest").apply {
+            assertEquals(
+                expected = HttpStatusCode.OK,
+                actual = status
+            )
+
+            val actualResponseListSize = Json.decodeFromString<ApiResponse>(body<String>().toString()).heroes?.size
+
+            // Make sure list response just 1 index
+            if (actualResponseListSize != null) {
+                assertEquals(
+                    expected = true,
+                    actual = actualResponseListSize > 0
+                )
+            }
+
+            val actualResponse = Json.decodeFromString<ApiResponse>(body<String>().toString()).heroes
+
+            val expectedNameHeroList = listOf("Amado Sanzu", "Uchiha Sasuke", "Uchiha Sakura")
+            expectedNameHeroList.forEach { heroName ->
+                actualResponse?.forEach { i ->
+                    if (heroName == i.name) {
+                        // Make sure name hero is equals with dummy list variable (expectedNameHeroList).
+                        assertEquals(expected = heroName, actual = i.name)
+                    }
+                }
+            }
+
+        }
+    }
+
+
+    /**
+     * Utility function
+     */
     private fun calculatePage(page: Int?) : Map<String, Int?> {
         var prevPage: Int? = page
         var nextPage: Int? = page
