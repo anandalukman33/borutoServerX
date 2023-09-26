@@ -10,7 +10,6 @@ fun Route.root() {
         call.respond(
             message = "Welcome to Boruto API!",
             status = HttpStatusCode.OK
-
         )
     }
 }

@@ -32,7 +32,5 @@ fun Route.getAllHeroes() {
                 status = HttpStatusCode.NotFound
             )
         }
-
-
     }
 }
