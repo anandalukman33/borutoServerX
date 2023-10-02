@@ -68,7 +68,7 @@ class PositiveCaseTest {
                     expected = HttpStatusCode.OK,
                     actual = response.status()
                 )
-
+                val actualResponse = Json.decodeFromString<ApiResponse>(response.content.toString())
                 val expectedResponse = ApiResponse(
                     success = true,
                     message = "Ok",
@@ -104,10 +104,9 @@ class PositiveCaseTest {
                         else -> {
                             emptyList()
                         }
-                    }
+                    },
+                    lastUpdated = actualResponse.lastUpdated
                 )
-
-                val actualResponse = Json.decodeFromString<ApiResponse>(response.content.toString())
 
                 // Result Expected Test
                 println("Expected Result is : $expectedResponse")
@@ -133,7 +132,7 @@ class PositiveCaseTest {
                 )
 
                 val page = request.queryParameters["page"]?.toInt() ?: 0
-
+                val actualResponse = Json.decodeFromString<ApiResponse>(response.content.toString())
                 val expectedResponse = ApiResponse(
                     success = true,
                     message = "Ok",
@@ -167,10 +166,9 @@ class PositiveCaseTest {
                         else -> {
                             emptyList()
                         }
-                    }
+                    },
+                    lastUpdated = actualResponse.lastUpdated
                 )
-
-                val actualResponse = Json.decodeFromString<ApiResponse>(response.content.toString())
 
                 // Result Expected Test
                 println("Expected Result is : $expectedResponse")
@@ -204,15 +202,16 @@ class PositiveCaseTest {
                     expected = HttpStatusCode.OK,
                     actual = status
                 )
+                val actualResponse = Json.decodeFromString<ApiResponse>(body<String>().toString())
                 val expectedResponse = ApiResponse(
                     success = true,
                     message = "Ok",
                     prevPage = calculatePage(page)[ConstantRepo.PREVIOUS_PAGE_KEY],
                     nextPage = calculatePage(page)[ConstantRepo.NEXT_PAGE_KEY],
-                    heroes = heroes[page - 1] // dibuat agar sesuai index list ex: (page = 1 == list[0])
+                    heroes = heroes[page - 1], // dibuat agar sesuai index list ex: (page = 1 == list[0])
+                    lastUpdated = actualResponse.lastUpdated
                 )
 
-                val actualResponse = Json.decodeFromString<ApiResponse>(body<String>().toString())
                 assertEquals(
                     expected = expectedResponse,
                     actual = actualResponse

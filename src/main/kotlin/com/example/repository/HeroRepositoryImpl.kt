@@ -391,7 +391,8 @@ class HeroRepositoryImpl : HeroRepository {
         message = "Ok",
         prevPage = calculatePage(page)[ConstantRepo.PREVIOUS_PAGE_KEY],
         nextPage = calculatePage(page)[ConstantRepo.NEXT_PAGE_KEY],
-        heroes = heroes[page] ?: emptyList()
+        heroes = heroes[page] ?: emptyList(),
+        lastUpdated = System.currentTimeMillis()
     )
 
     private fun calculatePage(page: Int) : Map<String, Int?> {
