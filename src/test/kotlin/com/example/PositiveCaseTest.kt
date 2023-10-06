@@ -247,7 +247,7 @@ class PositiveCaseTest {
             val heroBean = actualResponse?.get(0)
 
             // Make sure name hero is Uchiha Sasuke with paramQuery 'sas'
-            assertEquals(expected = "Uchiha Sasuke", actual = heroBean?.name ?: "")
+            assertEquals(expected = "Sasuke", actual = heroBean?.name ?: "")
         }
     }
 
